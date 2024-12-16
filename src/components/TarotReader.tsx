@@ -3,10 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Sparkles, RotateCcw } from 'lucide-react';
 import { getTarotReading } from '../utils/tarot';
 
-const CARDS = Array.from({ length: 22 }, (_, i) => ({
-  id: i,
-  image: `https://images.unsplash.com/photo-1635505646763-c1d8e4e4f665?auto=format&fit=crop&q=80&w=300&h=500`,
-}));
+const BACK_CARD_IMAGE = "/src/image/ar_zur_Design_a_tarot_card_back_with_intricate_mystical_symbols_398e0bb9-d9af-455a-9b5e-ceebf05fa2a9.png";
+const CARD_IMAGE = "/src/image/sample.jpg"
+
 
 const TarotReader = () => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
@@ -27,10 +26,12 @@ const TarotReader = () => {
     const randomIndex = Math.floor(Math.random() * 8);
     const newReading = getTarotReading();
     
-    // アニメーションの時間を確保 (1.67秒 ≈ 2秒/1.2)
-    await new Promise(resolve => setTimeout(resolve, 1670));
-    
+    // カードを即座に選択
     setSelectedCard(randomIndex);
+    
+    // アニメーション完了を待つ
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1.67秒から1秒に短縮
+    
     setReading(newReading);
     
     if (!isSubscribed) {
@@ -38,10 +39,11 @@ const TarotReader = () => {
       localStorage.setItem('lastTarotReading', new Date().toISOString());
     }
 
-    // 読み解きテキストを表示
+    // 読み解きテキストをより早く表示
     setTimeout(() => {
       setShowReading(true);
-    }, 800);
+      setIsDrawing(false); // アニメーション完了後に isDrawing を false に設定
+    }, 500); // 800msから500msに短縮
   };
 
   const resetReading = () => {
@@ -54,7 +56,7 @@ const TarotReader = () => {
   const deckVariants = {
     hover: {
       scale: 1.02,
-      transition: { duration: 0.3 }
+      transition: { duration: 0.2 } // 0.3秒から0.2秒に短縮
     }
   };
 
@@ -71,8 +73,8 @@ const TarotReader = () => {
       y: [0, -50, 0],
       scale: [1, 1.2, 1],
       transition: {
-        duration: 1.67,
-        times: [0, 0.5, 1],
+        duration: 1,
+        times: [0, 0.4, 1],
         ease: "easeInOut"
       }
     }
@@ -109,6 +111,11 @@ const TarotReader = () => {
                   <span className="text-purple-100 text-lg font-semibold">Draw</span>
                 </div>
               </div>
+              <img
+                src={BACK_CARD_IMAGE}
+                alt="Tarot Card Back"
+                className="w-full h-full object-cover rounded-xl"
+              />
             </div>
             {!isSubscribed && dailyReadingUsed && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl">
@@ -118,7 +125,7 @@ const TarotReader = () => {
           </motion.div>
         ) : (
           <div className="perspective-1000">
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               <motion.div
                 className="relative transform-gpu"
                 initial="initial"
@@ -126,20 +133,33 @@ const TarotReader = () => {
                 variants={cardVariants}
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-2xl backface-hidden">
-                  <img
-                    src={CARDS[selectedCard].image}
-                    alt="Selected Tarot Card"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                      <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-2xl backface-hidden">
+                        {/* isDrawingがtrueの間は裏面を表示、falseになったら表面を表示 */}
+                        {isDrawing ? (
+                          <motion.img
+                            key="back"
+                            src={BACK_CARD_IMAGE}
+                            alt="Tarot Card Back"
+                            className="w-full h-full object-cover"
+                            style={{ rotateY: 0 }}
+                          />
+                        ) : (
+                          <motion.img
+                            key="front"
+                            src={CARD_IMAGE}
+                            alt="Selected Tarot Card"
+                            className="w-full h-full object-cover"
+                            style={{ rotateY: 180 }}
+                          />
+                        )}
+                      </div>
               </motion.div>
             </AnimatePresence>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: showReading ? 1 : 0, y: showReading ? 0 : 20 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.3 }} // 0.5秒から0.3秒に短縮
               className="mt-8 text-center"
             >
               <p className="text-purple-100 text-lg leading-relaxed mb-6">{reading}</p>
@@ -159,7 +179,7 @@ const TarotReader = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.2 }} // 0.3秒から0.2秒に短縮
           className="mt-8 p-6 bg-purple-800/30 rounded-xl text-center max-w-sm w-full"
         >
           <h3 className="text-xl font-semibold text-purple-100 mb-2">
