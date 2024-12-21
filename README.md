@@ -1,17 +1,19 @@
-# Fortune Telling App 🔮
+# Fortune Telling App with AI 🔮
 
-タロットカードと星占いを提供する占いアプリケーション。
+AIを活用したタロットカードと星占いの占いアプリケーション。
 
 ## ✨ 機能
 
-### タロットカード占い
+### AIタロットカード占い
+- OpenAI APIを活用したカード解釈
 - アニメーション付きのカードドロー
-- 詳細な解説付き
+- 詳細な解説とAIによる洞察
 - 1日1回の無料占い
 
-### 星占い
+### AI星占い
+- OpenAI APIを活用したパーソナライズされた占い結果
 - 12星座対応
-- 対話形式の占い結果
+- 対話形式の占い体験
 - 複数の運勢カテゴリー（恋愛、仕事、健康など）
 
 ## 🛠 技術スタック
@@ -22,7 +24,7 @@
 - Tailwind CSS
 - Framer Motion
 - Lucide Icons
-- Google Gemini API
+- OpenAI API
 
 ## 🚀 開始方法
 
@@ -42,28 +44,22 @@ npm run dev
 
 ## 📝 環境設定
 
-### Google Gemini APIキーの取得
+### OpenAI APIキーの取得
 
-1. **Google Cloud Consoleへのアクセス**
-   - [Google Cloud Console](https://console.cloud.google.com/) にアクセス
-   - Googleアカウントでログイン
-   - 必要に応じて新規プロジェクトを作成
+1. **OpenAI Platformへのアクセス**
+   - [OpenAI Platform](https://platform.openai.com/) にアクセス
+   - アカウントを作成またはログイン
 
-2. **Gemini APIの有効化**
-   - 左側メニュー → 「APIとサービス」 → 「ライブラリ」を選択
-   - 「Gemini API」を検索
-   - APIを有効化
-
-3. **APIキーの作成**
-   - 左側メニュー → 「APIとサービス」 → 「認証情報」を選択
-   - 「認証情報を作成」 → 「APIキー」を選択
+2. **APIキーの作成**
+   - 左側のメニューから「API keys」を選択
+   - 「+ Create new secret key」をクリック
    - 生成されたAPIキーをコピー
 
-4. **環境変数の設定**
+3. **環境変数の設定**
    - プロジェクトのルートディレクトリに`.env`ファイルを作成
    - 以下の内容を追加：
      ```env
-     VITE_GEMINI_API_KEY=your_api_key_here
+     VITE_OPENAI_API_KEY=your_api_key_here
      ```
    - `your_api_key_here`を実際のAPIキーに置き換え
 
