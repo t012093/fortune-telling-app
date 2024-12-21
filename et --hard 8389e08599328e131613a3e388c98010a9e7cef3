@@ -1,0 +1,82 @@
+[33mcommit a0cbc21d172d53521ef4544d6578acc74a7f540a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: t012093 <97029186+t012093@users.noreply.github.com>
+Date:   Sat Dec 21 08:44:42 2024 +0000
+
+    ⏪ 指定されたコミットにリセット\n\nリポジトリの状態をコミット `a07babe13fc44d618dc35e1b68cd2d64363c6dbd` に戻しました。
+
+[33mcommit 9471a302e471a8ee45c4da001d2d58445fd3c4a7[m
+Author: t012093 <97029186+t012093@users.noreply.github.com>
+Date:   Sat Dec 21 08:34:00 2024 +0000
+
+    🎨feat(gemini): プロンプト明確化、履歴管理、パラメータ調整\n\n- プロンプトに会話履歴の保持期間とリセットタイミングを明示的に指示。\n- 会話履歴のフォーマットを「user: ... assistant: ...」に指定。\n- ユーザーの星座、名前、質問を明確に記述するように指示。\n- 占いの出力フォーマットを指定。\n- 会話履歴を配列で保持し、10回を超えたら古い履歴を削除してリセット。\n- Geminiのtemperatureパラメータを調整可能に変更。
+
+[33mcommit a07babe13fc44d618dc35e1b68cd2d64363c6dbd[m
+Author: t012093 <97029186+t012093@users.noreply.github.com>
+Date:   Sat Dec 21 07:52:17 2024 +0000
+
+    📝 Geminiのプロンプトを更新し、占いロジックの説明と具体的な指示を盛り込みました。
+
+[33mcommit 8389e08599328e131613a3e388c98010a9e7cef3[m
+Author: t012093 <97029186+t012093@users.noreply.github.com>
+Date:   Sat Dec 21 07:51:00 2024 +0000
+
+    🎨 Geminiのパラメータを調整し、創造性と具体性を向上させるように設定を変更しました。
+
+[33mcommit 3ee21ba5f1c9e6dfdadc50b00628130ff95f656a[m
+Author: t012093 <97029186+t012093@users.noreply.github.com>
+Date:   Sat Dec 21 07:35:47 2024 +0000
+
+    🗑️ .envファイルをGitリポジトリから削除し、.gitignoreに設定されていることを確認
+
+[33mcommit 178f229bea9dd01e82efabc1397b036f4c741e92[m
+Author: t012093 <97029186+t012093@users.noreply.github.com>
+Date:   Sat Dec 21 07:35:12 2024 +0000
+
+    ✨ 環境変数の追加: .envファイルを強制的に追加し、geminileyを設定しました
+
+[33mcommit 9225e770375dae3888446cc73e36846e5733fb74[m
+Author: t012093 <97029186+t012093@users.noreply.github.com>
+Date:   Sat Dec 21 05:34:01 2024 +0000
+
+    🎨 パッケージロックファイルを更新し、脆弱性を修正\n\n
+    up to date, audited 288 packages in 961ms
+    
+    65 packages are looking for funding
+      run `npm fund` for details
+    
+    found 0 vulnerabilities を実行して、プロジェクトの依存関係における脆弱性を修正しました。この変更により、 ファイルが更新されました。
+
+[33mcommit 99d9a1d847aa5298f05c2014111f842f98005869[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/initial-commit[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: naoya kusunoki <2005nkg@gmail.com>
+Date:   Mon Dec 16 21:39:32 2024 +0900
+
+    .mdを修正
+
+[33mcommit 775d89dab7bbff5cae0416a63e0b6c49978663ae[m
+Author: naoya kusunoki <2005nkg@gmail.com>
+Date:   Mon Dec 16 21:28:21 2024 +0900
+
+    add image
+
+[33mcommit f77a0e4042ceb28e5c162c7958f7cf8ebbfdfe5d[m
+Author: naoya kusunoki <2005nkg@gmail.com>
+Date:   Fri Dec 6 20:37:45 2024 +0900
+
+    feat: Gemini APIを使用した対話型占いシステムの実装
+    
+    - Gemini APIとの連携強化
+    - 文脈を理解した動的な質問生成機能の追加
+    - 星座に基づくパーソナライズされた占い結果の生成
+    - UIコンポーネントの改善とアニメーションの追加
+    
+    主な変更点：
+    1. AstrologyChatBotコンポーネントの刷新
+    2. SuggestionTabsコンポーネントの追加
+    3. Gemini APIの実装の最適化
+    4. レスポンシブなデザインの改善
+
+[33mcommit e1192bee0efef0d57bc2598193d1b0a1843404b1[m
+Author: naoya kusunoki <2005nkg@gmail.com>
+Date:   Fri Dec 6 19:06:10 2024 +0900
+
+    Initial commit: Fortune telling app with Tarot and Horoscope features

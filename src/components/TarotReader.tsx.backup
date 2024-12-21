@@ -1,0 +1,118 @@
+import React, { useState, useEffect } from 'react';
+import { Lock, Sparkles } from 'lucide-react';
+import { getTarotReading } from '../utils/tarot';
+
+const CARDS = Array.from({ length: 22 }, (_, i) => ({
+  id: i,
+  image: `https://images.unsplash.com/photo-1635505646763-c1d8e4e4f665?auto=format&fit=crop&q=80&w=300&h=500`,
+}));
+
+export default function TarotReader() {
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [reading, setReading] = useState<string>('');
+  const [dailyReadingUsed, setDailyReadingUsed] = useState(() => {
+    const lastReading = localStorage.getItem('lastTarotReading');
+    if (!lastReading) return false;
+    return new Date(lastReading).toDateString() === new Date().toDateString();
+  });
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const handleCardSelect = (index: number) => {
+    if (!isSubscribed && dailyReadingUsed) return;
+    
+    setSelectedCard(index);
+    const newReading = getTarotReading();
+    setReading(newReading);
+    
+    if (!isSubscribed) {
+      setDailyReadingUsed(true);
+      localStorage.setItem('lastTarotReading', new Date().toISOString());
+    }
+  };
+
+  const handleSubscribe = () => {
+    setIsSubscribed(true);
+  };
+
+  return (
+    <div className="space-y-6">
+      {!selectedCard ? (
+        <>
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-purple-100 mb-2">
+              Select Your Card
+            </h2>
+            <p className="text-purple-200">
+              {isSubscribed
+                ? 'Choose any card for your reading'
+                : dailyReadingUsed
+                ? 'You\'ve used your free reading for today'
+                : 'Choose a card for your free daily reading'}
+            </p>
+          </div>
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+            {CARDS.slice(0, 8).map((card, index) => (
+              <div
+                key={card.id}
+                className={`relative group cursor-pointer ${
+                  !isSubscribed && dailyReadingUsed ? 'opacity-50' : ''
+                }`}
+                onClick={() => handleCardSelect(index)}
+              >
+                <div className="aspect-[2/3] rounded-lg overflow-hidden transform transition-transform group-hover:scale-105">
+                  <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 to-indigo-900/50 group-hover:opacity-0 transition-opacity" />
+                  <img
+                    src={card.image}
+                    alt={`Tarot Card ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {!isSubscribed && dailyReadingUsed && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Lock className="text-purple-200 w-8 h-8" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="text-center space-y-6">
+          <h2 className="text-2xl font-semibold text-purple-100">Your Reading</h2>
+          <div className="max-w-sm mx-auto">
+            <img
+              src={CARDS[selectedCard].image}
+              alt="Selected Card"
+              className="w-full rounded-lg shadow-2xl"
+            />
+          </div>
+          <p className="text-purple-100 text-lg leading-relaxed">{reading}</p>
+          <button
+            onClick={() => setSelectedCard(null)}
+            className="px-6 py-2 bg-purple-500 text-white rounded-full hover:bg-purple-600 transition-colors"
+          >
+            Draw Another Card
+          </button>
+        </div>
+      )}
+
+      {!isSubscribed && (
+        <div className="mt-8 p-6 bg-purple-800/30 rounded-xl text-center">
+          <h3 className="text-xl font-semibold text-purple-100 mb-2">
+            Unlock Unlimited Readings
+          </h3>
+          <p className="text-purple-200 mb-4">
+            Get unlimited tarot readings for just $10/week
+          </p>
+          <button
+            onClick={handleSubscribe}
+            className="px-6 py-3 bg-gradient-to-r from-amber-400 to-amber-500 text-purple-900 rounded-full font-semibold hover:from-amber-500 hover:to-amber-600 transition-colors flex items-center gap-2 mx-auto"
+          >
+            <Sparkles size={20} />
+            Subscribe Now
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
