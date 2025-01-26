@@ -1,8 +1,8 @@
 import React from 'react';
-import { Moon, Sparkles, ArrowRight, Star, Compass, ScrollText, Users, Award, LogIn, UserPlus, Settings } from 'lucide-react';
+import { Moon, Sparkles, ArrowRight, Star, Compass, ScrollText, Users, Award, LogIn, UserPlus, Settings, Trophy } from 'lucide-react';
 
 type HomePageProps = {
-  onNavigate: (page: 'home' | 'astrology' | 'tarot' | 'personalInfoOnboarding') => void;
+  onNavigate: (page: 'home' | 'astrology' | 'tarot' | 'personalInfoOnboarding' | 'ranking') => void;
 };
 
 const features = [
@@ -66,7 +66,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </div>
 
       {/* Divination Methods */}
-      <div className="grid md:grid-cols-2 gap-6 max-w-4xl w-full mb-16">
+      <div className="grid md:grid-cols-3 gap-6 max-w-4xl w-full mb-16">
         <div
           onClick={() => onNavigate('astrology')}
           className="group cursor-pointer bg-purple-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-800/30 hover:bg-purple-800/40 transition-all duration-300"
@@ -94,6 +94,21 @@ export default function HomePage({ onNavigate }: HomePageProps) {
           <p className="text-purple-300">
             伝統的なタロット占いとAIの予測を組み合わせた、
             高精度な運命診断。風水の要素も取り入れた総合的なアドバイス。
+          </p>
+        </div>
+
+        <div
+          onClick={() => onNavigate('ranking')}
+          className="group cursor-pointer bg-purple-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-800/30 hover:bg-purple-800/40 transition-all duration-300"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <Trophy size={32} className="text-purple-300" />
+            <ArrowRight size={24} className="text-purple-400 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-2 transition-all duration-300" />
+          </div>
+          <h2 className="text-2xl font-semibold text-purple-100 mb-2">運勢ランキング</h2>
+          <p className="text-purple-300">
+            ユーザーの運勢スコアをランキング形式で表示。
+            週間・月間の運気上位者をチェックして、モチベーション向上に。
           </p>
         </div>
       </div>

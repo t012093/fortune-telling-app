@@ -5,6 +5,7 @@ import TarotReader from './components/TarotReader';
 import PersonalInfoOnboarding from './components/PersonalInfoOnboarding';
 import HomePage from './components/HomePage';
 import AstrologyChatBot from './components/AstrologyChatBot';
+import FortuneRanking from './components/FortuneRanking';
 
 function MainContent() {
   const { personalInfo, setPersonalInfo, isOnboardingComplete } = usePersonalInfo();
@@ -44,32 +45,55 @@ function MainContent() {
   );
 }
 
+type Page = 'home' | 'tarot' | 'astrology' | 'ranking' | 'personalInfoOnboarding';
+
 function App() {
-  const [page, setPage] = useState('home');
-  const handleNavigation = (p: string) => setPage(p);
+  const [page, setPage] = useState<Page>('home');
+  const handleNavigation = (p: Page) => setPage(p);
 
   const renderPage = () => {
     switch (page) {
-      // ...existing code...
       case 'home':
         return <HomePage onNavigate={handleNavigation} />;
-case 'tarot':
-  return <MainContent />;
-case 'astrology':
-  return <AstrologyChatBot />;
-default:
-  return <HomePage onNavigate={handleNavigation} />;
-// ...existing code...
+      case 'tarot':
+        return <MainContent />;
+      case 'astrology':
+        return <AstrologyChatBot />;
+      case 'ranking':
+        return <FortuneRanking />;
+      default:
+        return <HomePage onNavigate={handleNavigation} />;
     }
   };
 
   return (
     <ThemeProvider>
       <PersonalInfoProvider>
-        <div>
-          <button onClick={() => handleNavigation('home')}>Home</button>
-          <button onClick={() => handleNavigation('tarot')}>Tarot</button>
-          <button onClick={() => handleNavigation('astrology')}>Astrology</button>
+        <div className="fixed top-0 left-0 right-0 bg-purple-900/80 backdrop-blur-sm p-4 flex justify-center gap-4 z-50">
+          <button
+            onClick={() => handleNavigation('home')}
+            className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+          >
+            ホーム
+          </button>
+          <button
+            onClick={() => handleNavigation('tarot')}
+            className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+          >
+            タロット
+          </button>
+          <button
+            onClick={() => handleNavigation('astrology')}
+            className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+          >
+            星占い
+          </button>
+          <button
+            onClick={() => handleNavigation('ranking')}
+            className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+          >
+            ランキング
+          </button>
         </div>
         {renderPage()}
       </PersonalInfoProvider>
