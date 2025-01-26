@@ -1,8 +1,8 @@
 import React from 'react';
-import { Moon, Sparkles, ArrowRight, Star, Compass, ScrollText, Users, Award, LogIn, UserPlus } from 'lucide-react';
+import { Moon, Sparkles, ArrowRight, Star, Compass, ScrollText, Users, Award, LogIn, UserPlus, Settings } from 'lucide-react';
 
 type HomePageProps = {
-  onNavigate: (page: 'home' | 'astrology' | 'tarot') => void;
+  onNavigate: (page: 'home' | 'astrology' | 'tarot' | 'personalInfoOnboarding') => void;
 };
 
 const features = [
@@ -34,6 +34,13 @@ export default function HomePage({ onNavigate }: HomePageProps) {
           <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/50 text-purple-200 hover:bg-purple-800/50 transition-colors">
             <LogIn size={18} />
             <span>ログイン</span>
+          </button>
+          <button 
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/50 text-purple-200 hover:bg-purple-800/50 transition-colors"
+            onClick={() => onNavigate('personalInfoOnboarding')}
+          >
+            <Settings size={18} />
+            <span>アカウント設定</span>
           </button>
           <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition-colors">
             <UserPlus size={18} />

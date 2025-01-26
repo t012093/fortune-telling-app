@@ -1,0 +1,62 @@
+/* カードコンテナのベーススタイル */
+.card-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2/3;
+  perspective: 1000px;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  cursor: pointer;
+}
+
+/* カードが裏返っているときの状態 */
+.card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* カードの表面と裏面の共通スタイル */
+.cardface {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+}
+
+/* カードの表面 */
+.cardface__front {
+  transform: rotateY(0);
+  background-color: #262626;
+}
+
+/* カードの裏面 */
+.cardface__back {
+  transform: rotateY(180deg);
+  background-color: #aaaaaa;
+}
+
+/* カード画像のスタイル */
+.cardface img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* カードと結果のコンテナ */
+.tarot-reading-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 100vh;
+  padding: 2rem 0;
+}

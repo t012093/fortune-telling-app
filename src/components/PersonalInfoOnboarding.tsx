@@ -45,6 +45,9 @@ export default function PersonalInfoOnboarding({ onComplete, onSkip, existingDat
     }
 
     setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      console.log("validateStep バリデーションエラー:", newErrors); // バリデーションエラーの内容をconsole.logで出力
+    }
     return Object.keys(newErrors).length === 0;
   };
 
@@ -59,10 +62,17 @@ export default function PersonalInfoOnboarding({ onComplete, onSkip, existingDat
   };
 
   const handleComplete = () => {
-    if (validateStep(step)) {
-      const birthDate = new Date(info.birthDate);
-      const zodiacSign = calculateZodiacSign(birthDate);
-      onComplete({ ...info, zodiacSign });
+    try {
+      if (validateStep(step)) {
+        const birthDate = new Date(info.birthDate);
+        alert("完了ボタンがクリックされました！"); // アラートを表示
+        const zodiacSign = calculateZodiacSign(birthDate);
+        onComplete({ ...info, zodiacSign });
+      } else {
+        console.log("バリデーションエラー:", errors); // エラー内容をconsole.logで出力
+      }
+    } catch (error) {
+      console.error("handleCompleteでエラー発生:", error);
     }
   };
 
