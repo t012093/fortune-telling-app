@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Star, Trophy, Calendar, Crown, Sparkles } from 'lucide-react';
+import { Star, Trophy, Calendar, Crown, Sparkles, Heart } from 'lucide-react';
 
 interface RankingUser {
   name: string;
   zodiacSign: string;
   fortuneScore: number;
   luckyStreak: number;
+  thanksCount: number;
   avatarUrl: string;
 }
 
@@ -15,6 +16,7 @@ const mockWeeklyRanking: RankingUser[] = [
     zodiacSign: "さそり座",
     fortuneScore: 95,
     luckyStreak: 7,
+    thanksCount: 42,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=1"
   },
   {
@@ -22,6 +24,7 @@ const mockWeeklyRanking: RankingUser[] = [
     zodiacSign: "おうし座",
     fortuneScore: 88,
     luckyStreak: 5,
+    thanksCount: 35,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=2"
   },
   {
@@ -29,6 +32,7 @@ const mockWeeklyRanking: RankingUser[] = [
     zodiacSign: "てんびん座",
     fortuneScore: 85,
     luckyStreak: 4,
+    thanksCount: 28,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=3"
   },
 ];
@@ -39,6 +43,7 @@ const mockMonthlyRanking: RankingUser[] = [
     zodiacSign: "みずがめ座",
     fortuneScore: 92,
     luckyStreak: 15,
+    thanksCount: 156,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=4"
   },
   {
@@ -46,6 +51,7 @@ const mockMonthlyRanking: RankingUser[] = [
     zodiacSign: "おひつじ座",
     fortuneScore: 89,
     luckyStreak: 12,
+    thanksCount: 145,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=5"
   },
   {
@@ -53,6 +59,7 @@ const mockMonthlyRanking: RankingUser[] = [
     zodiacSign: "ふたご座",
     fortuneScore: 87,
     luckyStreak: 10,
+    thanksCount: 128,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=6"
   },
 ];
@@ -134,7 +141,7 @@ const FortuneRanking: React.FC = () => {
                     {user.zodiacSign}
                   </span>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-wrap">
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 text-yellow-400" />
                     <span className="text-sm text-purple-200">
@@ -145,6 +152,12 @@ const FortuneRanking: React.FC = () => {
                     <Sparkles className="w-4 h-4 text-purple-400" />
                     <span className="text-sm text-purple-200">
                       ラッキーストリーク: {user.luckyStreak}日
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Heart className="w-4 h-4 text-pink-400" />
+                    <span className="text-sm text-purple-200">
+                      {activeTab === 'weekly' ? '週間' : '月間'}ありがとう数: {user.thanksCount}
                     </span>
                   </div>
                 </div>
@@ -164,6 +177,9 @@ const FortuneRanking: React.FC = () => {
             </p>
             <p>
               • ラッキーストリークは、連続して良い運勢が続いている日数を表します
+            </p>
+            <p>
+              • ありがとう数は、占い結果に対して送られた感謝の数を表します
             </p>
             <p>
               • 週間ランキングは毎週月曜日に、月間ランキングは毎月1日にリセットされます

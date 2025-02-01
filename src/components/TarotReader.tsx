@@ -79,6 +79,25 @@ const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showThankYouButton, setShowThankYouButton] = useState(false);
+
+  // ローカルストレージから今週のありがとう数を取得
+  const [weeklyThanks, setWeeklyThanks] = useState(() => {
+    const now = new Date();
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+    const saved = localStorage.getItem('weeklyThanks');
+    if (!saved) return 0;
+    const { count, timestamp } = JSON.parse(saved);
+    return new Date(timestamp) >= weekStart ? count : 0;
+  });
+
+  const handleThankYou = () => {
+    const newCount = weeklyThanks + 1;
+    const now = new Date().toISOString();
+    setWeeklyThanks(newCount);
+    localStorage.setItem('weeklyThanks', JSON.stringify({ count: newCount, timestamp: now }));
+    setShowThankYouButton(false);
+  };
 
   const handleCardSelect = async () => {
     if (!isSubscribed && dailyReadingUsed) return;
@@ -109,6 +128,10 @@ const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
       console.error('Error getting tarot reading:', error);
     } finally {
       setIsGenerating(false);
+      // カードを引いた後、24時間後にありがとうボタンを表示
+      setTimeout(() => {
+        setShowThankYouButton(true);
+      }, 24 * 60 * 60 * 1000); // 24時間 = 86400000ミリ秒
     }
   };
 
@@ -233,6 +256,29 @@ const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
                 <RotateCcw size={20} />
                 <span>Draw Another Card</span>
               </button>
+              
+              {showThankYouButton && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4"
+                >
+                  <button
+                    onClick={handleThankYou}
+                    className="px-6 py-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors flex items-center gap-2 mx-auto"
+                  >
+                    <span>占い結果に感謝する</span>
+                  </button>
+                </motion.div>
+              )}
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-4 text-center text-purple-200"
+              >
+                今週のありがとう数: {weeklyThanks}
+              </motion.div>
             </motion.div>
           )}
         </div>

@@ -47,9 +47,37 @@ function MainContent() {
 
 type Page = 'home' | 'tarot' | 'astrology' | 'ranking' | 'personalInfoOnboarding';
 
-function App() {
+function AppContent() {
   const [page, setPage] = useState<Page>('home');
+  const { isOnboardingComplete, setPersonalInfo, personalInfo } = usePersonalInfo();
   const handleNavigation = (p: Page) => setPage(p);
+
+  const renderPersonalInfoOnboarding = () => (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 pt-20">
+      <PersonalInfoOnboarding
+        onComplete={(info) => {
+          setPersonalInfo(info);
+          setPage('home');
+        }}
+        onSkip={() => {
+          setPersonalInfo({
+            name: 'ゲスト',
+            birthDate: new Date().toISOString().split('T')[0],
+            birthTime: '',
+            gender: '',
+            zodiacSign: '不明'
+          });
+          setPage('home');
+        }}
+        existingData={personalInfo || undefined}
+      />
+    </div>
+  );
+
+  // 初回オンボーディングが完了していない場合とアカウント設定ページの場合に表示
+  if (!isOnboardingComplete || page === 'personalInfoOnboarding') {
+    return renderPersonalInfoOnboarding();
+  }
 
   const renderPage = () => {
     switch (page) {
@@ -67,9 +95,8 @@ function App() {
   };
 
   return (
-    <ThemeProvider>
-      <PersonalInfoProvider>
-        <div className="fixed top-0 left-0 right-0 bg-purple-900/80 backdrop-blur-sm p-4 flex justify-center gap-4 z-50">
+    <>
+      <div className="fixed top-0 left-0 right-0 bg-purple-900/80 backdrop-blur-sm p-4 flex justify-center gap-4 z-50">
           <button
             onClick={() => handleNavigation('home')}
             className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
@@ -94,8 +121,17 @@ function App() {
           >
             ランキング
           </button>
-        </div>
-        {renderPage()}
+      </div>
+      {renderPage()}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <PersonalInfoProvider>
+        <AppContent />
       </PersonalInfoProvider>
     </ThemeProvider>
   );

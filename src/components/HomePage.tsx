@@ -158,6 +158,39 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </div>
 
+      {/* Thank You System */}
+      <div className="w-full max-w-4xl mb-16 text-center">
+        <h2 className="text-3xl font-bold text-purple-100 mb-8">ありがとうシステム</h2>
+        <div className="bg-purple-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-800/30">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-purple-100">システムの仕組み</h3>
+              <ul className="text-purple-200 text-left space-y-2">
+                <li>• 占い結果を受け取ってから24時間後に「ありがとう」ボタンが表示されます</li>
+                <li>• 的中した占い結果に「ありがとう」を送ることができます</li>
+                <li>• 送られた「ありがとう」は週間集計され、ランキングに反映されます</li>
+                <li>• 週が変わると「ありがとう」カウントはリセットされます</li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-purple-100">特典と効果</h3>
+              <ul className="text-purple-200 text-left space-y-2">
+                <li>• 「ありがとう」を送ることで運気アップ</li>
+                <li>• 週間ランキング上位者には特別な称号が付与</li>
+                <li>• 感謝の気持ちを表すことで、より良い運勢を引き寄せる</li>
+                <li>• コミュニティ全体の運気向上に貢献</li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-8 bg-purple-800/30 p-4 rounded-lg text-purple-200">
+            <p className="text-center">
+              感謝の気持ちを伝えることは、自身の運気を高めるだけでなく、
+              占い師への励みとなり、より質の高い占いの提供につながります。
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Footer */}
       <div className="text-center">
         <p className="text-purple-200 text-lg mb-4">
