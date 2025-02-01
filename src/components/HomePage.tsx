@@ -27,7 +27,7 @@ const plans = [
 
 export default function HomePage({ onNavigate }: HomePageProps) {
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center px-4 pt-4">
       {/* Header with Auth Buttons */}
       <div className="w-full max-w-7xl flex justify-end mb-8 px-4">
         <div className="flex gap-4">

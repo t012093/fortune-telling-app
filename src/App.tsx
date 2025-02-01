@@ -95,8 +95,8 @@ function AppContent() {
   };
 
   return (
-    <>
-      <div className="fixed top-0 left-0 right-0 bg-purple-900/80 backdrop-blur-sm p-4 flex justify-center gap-4 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900">
+      <header className="fixed top-0 left-0 right-0 bg-purple-900/80 backdrop-blur-sm p-4 flex justify-center gap-4 z-50">
           <button
             onClick={() => handleNavigation('home')}
             className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
@@ -121,9 +121,11 @@ function AppContent() {
           >
             ランキング
           </button>
-      </div>
-      {renderPage()}
-    </>
+      </header>
+      <main className="pt-20">
+        {renderPage()}
+      </main>
+    </div>
   );
 }
 
