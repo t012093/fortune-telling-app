@@ -1,4 +1,4 @@
-export type MessageType = 'text' | 'fortune' | 'compatibility' | 'timing' | 'advice';
+export type MessageType = 'text' | 'fortune' | 'compatibility' | 'timing' | 'advice' | 'error';
 
 export interface Message {
   id: number;

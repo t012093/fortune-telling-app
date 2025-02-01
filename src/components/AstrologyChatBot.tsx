@@ -129,9 +129,9 @@ export default function AstrologyChatBot() {
       console.error('Error generating response:', error);
       const errorMessage: Message = {
         id: Date.now() + 1,
-        content: '申し訳ありません。一時的な問題が発生しました。もう一度お試しください。',
+        content: error instanceof Error ? error.message : '申し訳ありません。一時的な問題が発生しました。もう一度お試しください。',
         sender: 'bot',
-        type: 'text',
+        type: 'error',
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -173,6 +173,8 @@ export default function AstrologyChatBot() {
                   className={`rounded-2xl px-4 py-2 ${
                     message.sender === 'user'
                       ? 'bg-purple-500 text-white'
+                      : message.type === 'error'
+                      ? 'bg-red-500/50 text-red-50 border border-red-400'
                       : 'bg-indigo-600/50 text-purple-50'
                   }`}
                 >
