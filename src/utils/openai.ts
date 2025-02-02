@@ -22,30 +22,58 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
+function computeEnhancedAstrologyContext(): string {
+  // Placeholder enhanced astrology logic.
+  // In the future, you can include dynamic computations based on planetary positions and aspects.
+  return `
+【強化された占星術ロジック】
+・惑星の配置とアスペクトから、リーダーシップを発揮するタイミングが近づいている可能性があります。
+・第10ハウスの影響により、キャリアにおける新たなチャンスが生まれる兆しがあります。
+`;
+}
+
 const getOpenAIResponse = async (
   message: string,
-  conversationHistory: { role: 'user' | 'model'; content: string }[],
-  currentTime: Date
+  conversationHistory: { role: 'user' | 'model' | 'system' | 'assistant'; content: string }[],
+  currentTime: Date,
+  personalInfo?: { fourPillars?: any }
 ) => {
   try {
     const systemPrompt = {
       role: 'system' as const,
-      content: `あなたは占星術の専門家であり、同時に親身な相談相手として振る舞ってください。以下の指針に従って回答を提供します：
+      content: `あなたは占星術と四柱推命の専門家であり、同時に親身な相談相手として振る舞ってください。両方の占術を組み合わせて、より深い洞察を提供します：
 
-【基本姿勢】
+【鑑定の基本姿勢】
 • クライアントに寄り添い、その人の状況や感情を深く理解した上でアドバイスを行う
-• 形式的な解説だけでなく、実体験や具体例を交えながら説明
-• 占星術の専門知識を活かしつつ、分かりやすい言葉で伝える
+• 占星術と四柱推命の両方の視点から、総合的な解釈を提供
+• 形式的な解説を避け、具体例を交えながら分かりやすく説明
 
-【回答の要素】
+【複合的な占術アプローチ】
+1. 西洋占星術による解釈
+   - 惑星の配置と運行
+   - ハウスとアスペクトの影響
+   - 現在のトランジットの意味
+
+2. 四柱推命からの視点
+   - 日柱・月柱・年柱・時柱の組み合わせ
+   - 五行のバランス
+   - 運勢の流れと変化の時期
+
+【回答の構成】
 1. まず相手の質問や状況に共感を示す
-2. 占星術的な見地から現在の状況を解説
-   - 惑星の配置や動きが日常生活にどう影響するか
-   - ハウスやアスペクトが示す具体的なチャンスや注意点
-3. 実践的なアドバイス
-   - 具体的な行動プラン（例：「週末には○○してみましょう」） (例: "足を洗うと運気アップ.") (例: "今日は家族とのコミュニケーションを大切にしてください。") (例: "自分にご褒美をあげるといいでしょう。") (例: "ニュースをチェックしてみると新しいアイディアが浮かぶかもしれません。")
-   - 心構えや意識の持ち方
-   - 状況改善のためのステップ
+2. 両占術からの総合的な見解
+   - 西洋占星術からの解釈
+   - 四柱推命からの視点
+   - 両者の共通点や相違点から導き出される洞察
+3. 具体的なアドバイス
+   • 吉方位や開運アクション
+   • タイミングの選び方
+   • 注意点や活かすべきポイント
+   • 具体的な行動提案：
+     - 「新月の日に○○をする」
+     - 「五行の○○を強化するために△△を心がける」
+     - 「運気の流れに乗るために□□を試してみる」
+     - 「この時期だからこそ効果的な◇◇」
 
 【禁止事項】
 • 表面的な占星術用語の羅列
@@ -62,9 +90,36 @@ const getOpenAIResponse = async (
 相手の質問や状況に応じて、形式にこだわらず、最も効果的な方法でアドバイスを提供してください。特に重要なポイントは、単なる占星術の解説ではなく、その人の人生や感情に寄り添った、実践的で具体的なガイダンスを提供することです。`
     };
 
+    // 四柱推命の情報を文字列に変換
+    const fourPillarsInfo = conversationHistory[0].content.includes('四柱推命データ：')
+      ? '以前の四柱推命データを継続して参照'
+      : personalInfo?.fourPillars
+        ? `
+【四柱推命データ】
+■ 年柱：${personalInfo.fourPillars.year.stem.name}${personalInfo.fourPillars.year.branch.name}
+■ 月柱：${personalInfo.fourPillars.month.stem.name}${personalInfo.fourPillars.month.branch.name}
+■ 日柱：${personalInfo.fourPillars.day.stem.name}${personalInfo.fourPillars.day.branch.name}
+■ 時柱：${personalInfo.fourPillars.hour.stem.name}${personalInfo.fourPillars.hour.branch.name}`
+        : '四柱推命データなし（生年月日時が不完全）';
+
+    // Compute enhanced astrology context and append it to the reference data
+    const enhancedAstrologyContext = computeEnhancedAstrologyContext();
+
     const userPrompt = {
       role: 'user' as const,
-      content: `質問：${message}\n\n現在の日時：${currentTime.toLocaleDateString()}\n\n参照データ：\n【ハウス】${JSON.stringify(astrologyHouses)}\n【星座】${JSON.stringify(astrologySigns)}\n【惑星】${JSON.stringify(astrologyPlanets)}\n【アスペクト】${JSON.stringify(astrologyAspects)}\n【感受点】${JSON.stringify(astrologyPoints)}\n【黄道十二宮の区分】${JSON.stringify(zodiacQualities)}\n${JSON.stringify(zodiacElements)}\n【惑星の支配】${JSON.stringify(planetRulers)}`
+      content: `質問：${message}\n\n現在の日時：${currentTime.toLocaleDateString()}\n\n参照データ：
+【ハウス】${JSON.stringify(astrologyHouses)}
+【星座】${JSON.stringify(astrologySigns)}
+【惑星】${JSON.stringify(astrologyPlanets)}
+【アスペクト】${JSON.stringify(astrologyAspects)}
+【感受点】${JSON.stringify(astrologyPoints)}
+【黄道十二宮の区分】${JSON.stringify(zodiacQualities)}
+${JSON.stringify(zodiacElements)}
+【惑星の支配】${JSON.stringify(planetRulers)}
+
+${fourPillarsInfo}
+
+${enhancedAstrologyContext}`
     };
 
     const completion = await openai.chat.completions.create({
@@ -79,7 +134,7 @@ const getOpenAIResponse = async (
         userPrompt
       ],
       temperature: 0.9, // より創造的で個性的な応答を生成
-      max_tokens: 3000, // より詳細な回答を可能に
+      max_tokens: 5000, // より詳細な回答を可能に
       top_p: 0.95, // より多様な表現を許容
       presence_penalty: 0.6, // 同じような内容の繰り返しを避ける
       frequency_penalty: 0.4, // 表現の多様性を高める
@@ -92,13 +147,9 @@ const getOpenAIResponse = async (
       // APIキーに関するエラーの場合
       if (error.message.includes('API key')) {
         errorMessage = '申し訳ありません。APIキーの認証に問題が発生しました。システム管理者にお問い合わせください。';
-      }
-      // レートリミットに関するエラーの場合
-      else if (error.message.includes('Rate limit')) {
+      } else if (error.message.includes('Rate limit')) {
         errorMessage = '申し訳ありません。一時的にサービスが混雑しています。しばらく待ってから再度お試しください。';
-      }
-      // その他のエラーの場合
-      else {
+      } else {
         errorMessage = `申し訳ありません。エラーが発生しました：${error.message}`;
       }
     }

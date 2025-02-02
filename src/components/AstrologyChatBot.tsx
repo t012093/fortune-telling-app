@@ -14,6 +14,7 @@ const SUGGESTIONS = [
   "いつが転機となりそう？",
 ] as const;
 
+
 export default function AstrologyChatBot() {
   const { personalInfo } = usePersonalInfo();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -98,13 +99,23 @@ export default function AstrologyChatBot() {
     setShowSuggestions(false);
 
     try {
-      const conversationHistory: { role: 'user' | 'model'; content: string }[] = messages.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
+      // 最新の5組の会話を取得（最大10メッセージ：ユーザーの質問と応答のペア）
+      const recentMessages = messages.slice(-10);
+      const conversationHistory: { role: 'user' | 'assistant' | 'system'; content: string }[] = recentMessages.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.content,
       }));
 
-      // personalInfoを渡して応答を生成
-      const response = await getOpenAIResponse(input, conversationHistory, now);
+      // 会話の文脈を要約して追加
+      // 文脈の要約をより詳細に
+      const contextSummary = {
+        role: 'system' as const,
+        content: `これまでの会話の文脈：${personalInfo?.name}さん（${personalInfo?.zodiacSign}座）との会話です。
+直近の話題：${chatContext.lastQuestion || 'まだ会話が始まったばかりです'}`
+      };
+
+      // personalInfoを渡して応答を生成（文脈を含める）
+      const response = await getOpenAIResponse(input, [contextSummary, ...conversationHistory], now);
 
       const newSuggestions = analyzeSuggestions(input);
 
@@ -181,20 +192,7 @@ export default function AstrologyChatBot() {
                   <p className="whitespace-pre-wrap">{message.content}</p>
                 </div>
 
-                {message.sender === 'bot' && message.metadata?.suggestions && showSuggestions && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {message.metadata.suggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setInput(suggestion)}
-                        className="text-sm px-3 py-1 rounded-full bg-purple-900/30 text-purple-200 hover:bg-purple-800/30 transition-colors"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              {message.sender === 'bot' && messages.length === 1 && message.metadata?.suggestions && (
+                {message.sender === 'bot' && message.metadata?.suggestions && (messages.length > 1 ? showSuggestions : true) && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {message.metadata.suggestions.map((suggestion, index) => (
                       <button
