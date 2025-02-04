@@ -17,10 +17,25 @@ const astrologyHouses = [
   { id: 12, name: '第12ハウス', meaning: '潜在意識、秘密、霊性' }
 ];
 
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+// OpenAIクライアントを作成する関数
+const createOpenAIClient = (apiKey: string) => {
+  return new OpenAI({
+    apiKey: apiKey,
+    dangerouslyAllowBrowser: true,
+  });
+};
+
+let openai: OpenAI | null = null;
+
+// APIキーを設定する関数
+const setOpenAIApiKey = (apiKey: string) => {
+  openai = createOpenAIClient(apiKey);
+};
+
+// APIキーをクリアする関数
+const clearOpenAIApiKey = () => {
+  openai = null;
+};
 
 function computeEnhancedAstrologyContext(): string {
   // Placeholder enhanced astrology logic.
@@ -38,6 +53,10 @@ const getOpenAIResponse = async (
   currentTime: Date,
   personalInfo?: undefined
 ) => {
+  if (!openai) {
+    throw new Error('OpenAI APIキーが設定されていません。アカウント設定からAPIキーを設定してください。');
+  }
+
   try {
     const systemPrompt = {
       role: 'system' as const,
@@ -138,5 +157,9 @@ ${enhancedAstrologyContext}`
   }
 };
 
-export default openai;
-export { getOpenAIResponse };
+export {
+  createOpenAIClient,
+  setOpenAIApiKey,
+  clearOpenAIApiKey,
+  getOpenAIResponse
+};

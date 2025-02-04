@@ -2,7 +2,7 @@ import React from 'react';
 import { Moon, Sparkles, ArrowRight, Star, Compass, ScrollText, Users, Award, LogIn, UserPlus, Settings, Trophy } from 'lucide-react';
 
 type HomePageProps = {
-  onNavigate: (page: 'home' | 'astrology' | 'tarot' | 'personalInfoOnboarding' | 'ranking') => void;
+  onNavigate: (page: 'home' | 'astrology' | 'tarot' | 'personalInfoOnboarding' | 'ranking' | 'accountSettings') => void;
 };
 
 const features = [
@@ -35,9 +35,9 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             <LogIn size={18} />
             <span>ログイン</span>
           </button>
-          <button 
+          <button
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/50 text-purple-200 hover:bg-purple-800/50 transition-colors"
-            onClick={() => onNavigate('personalInfoOnboarding')}
+            onClick={() => onNavigate('accountSettings')}
           >
             <Settings size={18} />
             <span>アカウント設定</span>

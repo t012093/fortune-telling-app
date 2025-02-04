@@ -1,14 +1,31 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
-
-export interface AstrologyInfo {
+// Types
+interface AstrologyInfo {
   zodiacSign: string;
   birthDate: string;
   birthTime?: string;
 }
 
-export const getIntegratedReading = async (
+// State
+let genAI: GoogleGenerativeAI | null = null;
+
+// APIクライアントを作成する関数
+const createGeminiClient = (apiKey: string) => {
+  return new GoogleGenerativeAI(apiKey);
+};
+
+// APIキーを設定する関数
+const setGeminiApiKey = (apiKey: string) => {
+  genAI = createGeminiClient(apiKey);
+};
+
+// APIキーをクリアする関数
+const clearGeminiApiKey = () => {
+  genAI = null;
+};
+
+const getIntegratedReading = async (
   tarotCard: {
     nameJp: string;
     description: string;
@@ -20,6 +37,10 @@ export const getIntegratedReading = async (
   isReversed: boolean,
   astrologyInfo: AstrologyInfo
 ) => {
+  if (!genAI) {
+    throw new Error('Gemini APIキーが設定されていません。アカウント設定からAPIキーを設定してください。');
+  }
+
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
   const prompt = `
@@ -107,4 +128,13 @@ ${astrologyInfo.birthTime ? `出生時刻：${astrologyInfo.birthTime}` : ''}
     console.error('Gemini API error:', error);
     return '申し訳ありません。神秘の知識の読み解きに一時的な障壁が生じました。深い洞察をお届けするため、しばらく時間を置いてから再度お試しください。';
   }
+};
+
+// Exports
+export type { AstrologyInfo };
+export {
+  createGeminiClient,
+  setGeminiApiKey,
+  clearGeminiApiKey,
+  getIntegratedReading
 };

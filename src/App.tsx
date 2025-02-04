@@ -1,11 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { PersonalInfoProvider, usePersonalInfo } from './context/PersonalInfoContext';
+import { ApiKeyProvider, useApiKeys } from './context/ApiKeyContext';
+import { setOpenAIApiKey } from './utils/openai';
+import { setGeminiApiKey } from './utils/gemini';
 import TarotReader from './components/TarotReader';
 import PersonalInfoOnboarding from './components/PersonalInfoOnboarding';
 import HomePage from './components/HomePage';
 import AstrologyChatBot from './components/AstrologyChatBot';
 import FortuneRanking from './components/FortuneRanking';
+
+// APIキーの初期化を行うコンポーネント
+function ApiKeyInitializer({ children }: { children: React.ReactNode }) {
+  const { apiKeys } = useApiKeys();
+
+  useEffect(() => {
+    if (apiKeys.openai) {
+      setOpenAIApiKey(apiKeys.openai);
+    }
+    if (apiKeys.gemini) {
+      setGeminiApiKey(apiKeys.gemini);
+    }
+  }, [apiKeys]);
+
+  return <>{children}</>;
+}
 
 function MainContent() {
   const { personalInfo, setPersonalInfo, isOnboardingComplete } = usePersonalInfo();
@@ -45,12 +64,23 @@ function MainContent() {
   );
 }
 
-type Page = 'home' | 'tarot' | 'astrology' | 'ranking' | 'personalInfoOnboarding';
+import AccountSettings from './components/AccountSettings';
+
+type Page = 'home' | 'tarot' | 'astrology' | 'ranking' | 'personalInfoOnboarding' | 'accountSettings';
 
 function AppContent() {
   const [page, setPage] = useState<Page>('home');
   const { isOnboardingComplete, setPersonalInfo, personalInfo } = usePersonalInfo();
   const handleNavigation = (p: Page) => setPage(p);
+
+  const renderAccountSettingsPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 pt-20">
+      <AccountSettings
+        onSave={() => setPage('home')}
+        onCancel={() => setPage('home')}
+      />
+    </div>
+  );
 
   const renderPersonalInfoOnboarding = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 pt-20">
@@ -74,12 +104,12 @@ function AppContent() {
     </div>
   );
 
-  // 初回オンボーディングが完了していない場合とアカウント設定ページの場合に表示
-  if (!isOnboardingComplete || page === 'personalInfoOnboarding') {
-    return renderPersonalInfoOnboarding();
-  }
 
   const renderPage = () => {
+    if (!isOnboardingComplete || page === 'personalInfoOnboarding') {
+      return renderPersonalInfoOnboarding();
+    }
+
     switch (page) {
       case 'home':
         return <HomePage onNavigate={handleNavigation} />;
@@ -89,6 +119,8 @@ function AppContent() {
         return <AstrologyChatBot />;
       case 'ranking':
         return <FortuneRanking />;
+      case 'accountSettings':
+        return renderAccountSettingsPage();
       default:
         return <HomePage onNavigate={handleNavigation} />;
     }
@@ -132,9 +164,13 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <PersonalInfoProvider>
-        <AppContent />
-      </PersonalInfoProvider>
+      <ApiKeyProvider>
+        <ApiKeyInitializer>
+          <PersonalInfoProvider>
+            <AppContent />
+          </PersonalInfoProvider>
+        </ApiKeyInitializer>
+      </ApiKeyProvider>
     </ThemeProvider>
   );
 }

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { User, Key, Volume2, Plus, Trash2, Save } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Key, Volume2, Plus, Trash2, Save, Sparkles } from 'lucide-react';
+import { useApiKeys } from '../context/ApiKeyContext';
 
 type FamilyMember = {
   id: string;
@@ -12,7 +13,6 @@ type FamilyMember = {
 
 type Settings = {
   familyMembers: FamilyMember[];
-  apiKey: string;
   voice: {
     enabled: boolean;
     speed: number;
@@ -32,7 +32,15 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(
     currentSettings?.familyMembers || []
   );
-  const [apiKey, setApiKey] = useState(currentSettings?.apiKey || '');
+  const { apiKeys, setApiKey } = useApiKeys();
+  const [openaiKey, setOpenaiKey] = useState(apiKeys.openai || '');
+  const [geminiKey, setGeminiKey] = useState(apiKeys.gemini || '');
+
+  // APIキーが外部で変更された場合に状態を更新
+  useEffect(() => {
+    setOpenaiKey(apiKeys.openai || '');
+    setGeminiKey(apiKeys.gemini || '');
+  }, [apiKeys]);
   const [voiceEnabled, setVoiceEnabled] = useState(
     currentSettings?.voice?.enabled || false
   );
@@ -168,21 +176,68 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
         <h3 className="text-xl font-semibold text-purple-100 mb-4">API Key設定</h3>
         <div className="space-y-4">
           <div>
-            <label htmlFor="apiKey" className="block text-sm text-purple-200 mb-1">
-              API Key
+            <label htmlFor="openaiKey" className="block text-sm text-purple-200 mb-1">
+              OpenAI API Key
             </label>
-            <input
-              id="apiKey"
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="your-api-key-here"
-              className="w-full bg-purple-900/30 text-purple-100 placeholder-purple-300/50 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
+            <div className="relative">
+              <input
+                id="openaiKey"
+                type="password"
+                value={openaiKey}
+                onChange={(e) => setOpenaiKey(e.target.value)}
+                placeholder="sk-..."
+                className="w-full bg-purple-900/30 text-purple-100 placeholder-purple-300/50 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <a
+                href="https://platform.openai.com/api-keys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300 hover:text-purple-200"
+              >
+                <Sparkles size={16} />
+              </a>
+            </div>
+            <p className="text-xs text-purple-300 mt-1">
+              ※ OpenAIのアカウントを作成し、APIキーを取得してください
+            </p>
           </div>
-          <p className="text-sm text-purple-300">
-            ※ API Keyは安全に保管され、暗号化されて保存されます
-          </p>
+
+          <div>
+            <label htmlFor="geminiKey" className="block text-sm text-purple-200 mb-1">
+              Google Gemini API Key
+            </label>
+            <div className="relative">
+              <input
+                id="geminiKey"
+                type="password"
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+                placeholder="your-gemini-api-key"
+                className="w-full bg-purple-900/30 text-purple-100 placeholder-purple-300/50 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <a
+                href="https://makersuite.google.com/app/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300 hover:text-purple-200"
+              >
+                <Sparkles size={16} />
+              </a>
+            </div>
+            <p className="text-xs text-purple-300 mt-1">
+              ※ Google Cloud Consoleで Gemini APIキーを取得してください
+            </p>
+          </div>
+
+          <div className="p-4 bg-purple-800/30 rounded-lg">
+            <h4 className="text-sm font-semibold text-purple-100 mb-2">APIキーについて</h4>
+            <ul className="text-xs text-purple-200 space-y-2">
+              <li>• APIキーは暗号化されてローカルに保存されます</li>
+              <li>• サーバーには送信されません</li>
+              <li>• ブラウザのローカルストレージにのみ保存されます</li>
+              <li>• 定期的にAPIキーを更新することをお勧めします</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -322,14 +377,24 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
             キャンセル
           </button>
           <button
-            onClick={() => onSave({
-              familyMembers,
-              apiKey,
-              voice: {
-                enabled: voiceEnabled,
-                ...voiceSettings
+            onClick={() => {
+              // APIキーを保存
+              if (openaiKey) {
+                setApiKey('openai', openaiKey);
               }
-            })}
+              if (geminiKey) {
+                setApiKey('gemini', geminiKey);
+              }
+              
+              // その他の設定を保存
+              onSave({
+                familyMembers,
+                voice: {
+                  enabled: voiceEnabled,
+                  ...voiceSettings
+                }
+              });
+            }}
             className="flex items-center gap-2 px-6 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition-colors"
           >
             <Save size={18} />
