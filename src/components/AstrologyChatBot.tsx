@@ -115,7 +115,7 @@ export default function AstrologyChatBot() {
       };
 
       // personalInfoを渡して応答を生成（文脈を含める）
-      const response = await getOpenAIResponse(input, [contextSummary, ...conversationHistory], now);
+      const response = await getOpenAIResponse(input, [contextSummary, ...conversationHistory], now, undefined);
 
       const newSuggestions = analyzeSuggestions(input);
 

@@ -4,15 +4,12 @@ import { ChevronRight, ChevronLeft, Star, Clock, User, Save } from 'lucide-react
 import { calculateZodiacSign } from '../utils/astrology';
 
 import { DateTime } from 'luxon';
-import { FourPillars, calculateFourPillars } from '../utils/fourPillars';
-
 export type PersonalInfo = {
   name: string;
   birthDate: string;
   birthTime?: string;
   gender?: 'male' | 'female' | 'other' | '';
   zodiacSign?: string;
-  fourPillars?: FourPillars;
 };
 
 type Props = {
@@ -71,21 +68,9 @@ export default function PersonalInfoOnboarding({ onComplete, onSkip, existingDat
         const birthDate = new Date(info.birthDate);
         const zodiacSign = calculateZodiacSign(birthDate);
         
-        // 四柱推命の計算
-        let fourPillars: FourPillars | undefined;
-        if (info.birthTime) {
-          const [hours, minutes] = info.birthTime.split(':').map(Number);
-          const dt = DateTime.fromJSDate(birthDate).set({
-            hour: hours,
-            minute: minutes
-          });
-          fourPillars = calculateFourPillars(dt);
-        }
-
         onComplete({ 
           ...info, 
-          zodiacSign,
-          fourPillars 
+          zodiacSign
         });
       } else {
         console.log("バリデーションエラー:", errors);

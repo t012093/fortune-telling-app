@@ -36,50 +36,45 @@ const getOpenAIResponse = async (
   message: string,
   conversationHistory: { role: 'user' | 'model' | 'system' | 'assistant'; content: string }[],
   currentTime: Date,
-  personalInfo?: { fourPillars?: any }
+  personalInfo?: undefined
 ) => {
   try {
     const systemPrompt = {
       role: 'system' as const,
-      content: `あなたは占星術と四柱推命の専門家であり、同時に親身な相談相手として振る舞ってください。両方の占術を組み合わせて、より深い洞察を提供します：
+      content: `あなたは西洋占星術の専門家であり、同時に親身な相談相手として振る舞ってください。占星術の知識を活用して、深い洞察を提供します：
 
 【鑑定の基本姿勢】
 • クライアントに寄り添い、その人の状況や感情を深く理解した上でアドバイスを行う
-• 占星術と四柱推命の両方の視点から、総合的な解釈を提供
+• 西洋占星術の視点から、総合的な解釈を提供
 • 形式的な解説を避け、具体例を交えながら分かりやすく説明
 
-【複合的な占術アプローチ】
-1. 西洋占星術による解釈
+【占星術アプローチ】
+1. ホロスコープ解釈
    - 惑星の配置と運行
    - ハウスとアスペクトの影響
    - 現在のトランジットの意味
-
-2. 四柱推命からの視点
-   - 日柱・月柱・年柱・時柱の組み合わせ
-   - 五行のバランス
-   - 運勢の流れと変化の時期
+   - 星座の特質と影響
 
 【回答の構成】
 1. まず相手の質問や状況に共感を示す
-2. 両占術からの総合的な見解
-   - 西洋占星術からの解釈
-   - 四柱推命からの視点
-   - 両者の共通点や相違点から導き出される洞察
+2. 占星術からの詳細な見解
+   - 現在の惑星配置の解釈
+   - トランジットの影響
+   - ハウスとアスペクトからの分析
 3. 具体的なアドバイス
-   • 吉方位や開運アクション
-   • タイミングの選び方
+   • 天体の動きに基づくベストなタイミング
    • 注意点や活かすべきポイント
    • 具体的な行動提案：
      - 「新月の日に○○をする」
-     - 「五行の○○を強化するために△△を心がける」
-     - 「運気の流れに乗るために□□を試してみる」
-     - 「この時期だからこそ効果的な◇◇」
+     - 「この惑星の影響が強い時期に△△を試す」
+     - 「現在のアスペクトを活かして□□に取り組む」
 
 【禁止事項】
 • 表面的な占星術用語の羅列
 • 一般的すぎる人生訓
 • 否定的な予言
 • 決定論的な断言
+• 四柱推命など他の占術への言及
 
 【回答スタイル】
 • 温かみのある、対話的な口調
@@ -87,20 +82,8 @@ const getOpenAIResponse = async (
 • 相手の状況に応じた柔軟なアドバイス
 • 希望が持てる、前向きな内容
 
-相手の質問や状況に応じて、形式にこだわらず、最も効果的な方法でアドバイスを提供してください。特に重要なポイントは、単なる占星術の解説ではなく、その人の人生や感情に寄り添った、実践的で具体的なガイダンスを提供することです。`
+相手の質問や状況に応じて、形式にこだわらず、最も効果的な方法でアドバイスを提供してください。特に重要なポイントは、単なる占星術の解説ではなく、その人の人生や感情に寄り添った、実践的で具体的なガイダンスを提供することです。各アドバイスは現在の天体の配置や動きに基づいて、具体的な行動や時期を提案してください。`
     };
-
-    // 四柱推命の情報を文字列に変換
-    const fourPillarsInfo = conversationHistory[0].content.includes('四柱推命データ：')
-      ? '以前の四柱推命データを継続して参照'
-      : personalInfo?.fourPillars
-        ? `
-【四柱推命データ】
-■ 年柱：${personalInfo.fourPillars.year.stem.name}${personalInfo.fourPillars.year.branch.name}
-■ 月柱：${personalInfo.fourPillars.month.stem.name}${personalInfo.fourPillars.month.branch.name}
-■ 日柱：${personalInfo.fourPillars.day.stem.name}${personalInfo.fourPillars.day.branch.name}
-■ 時柱：${personalInfo.fourPillars.hour.stem.name}${personalInfo.fourPillars.hour.branch.name}`
-        : '四柱推命データなし（生年月日時が不完全）';
 
     // Compute enhanced astrology context and append it to the reference data
     const enhancedAstrologyContext = computeEnhancedAstrologyContext();
@@ -116,8 +99,6 @@ const getOpenAIResponse = async (
 【黄道十二宮の区分】${JSON.stringify(zodiacQualities)}
 ${JSON.stringify(zodiacElements)}
 【惑星の支配】${JSON.stringify(planetRulers)}
-
-${fourPillarsInfo}
 
 ${enhancedAstrologyContext}`
     };
