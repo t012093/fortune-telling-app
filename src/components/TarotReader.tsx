@@ -6,8 +6,8 @@ import { AstrologyInfo } from '../utils/gemini';
 import { majorArcana } from '../data/tarotCards';
 import '../styles/card.css';
 
-// Viteでの画像インポート
-import backCardImage from '../image/ar_zur_Design_a_tarot_card_back_with_intricate_mystical_symbols_398e0bb9-d9af-455a-9b5e-ceebf05fa2a9.png';
+// カード裏面の画像パス
+const backCardImage = '/cards/cardback.png';
 
 interface TarotReaderProps {
   userInfo: AstrologyInfo;
