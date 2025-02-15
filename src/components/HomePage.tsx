@@ -1,5 +1,5 @@
 import React from 'react';
-import { Moon, Sparkles, ArrowRight, Star, Compass, ScrollText, Users, Award, LogIn, UserPlus, Settings, Trophy } from 'lucide-react';
+import { Moon, Sparkles, ArrowRight, Star, Compass, ScrollText, Users, Award, Trophy } from 'lucide-react';
 
 type HomePageProps = {
   onNavigate: (page: 'home' | 'astrology' | 'tarot' | 'personalInfoOnboarding' | 'ranking' | 'accountSettings') => void;
@@ -28,27 +28,6 @@ const plans = [
 export default function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="min-h-screen flex flex-col items-center px-4 pt-4">
-      {/* Header with Auth Buttons */}
-      <div className="w-full max-w-7xl flex justify-end mb-8 px-4">
-        <div className="flex gap-4">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/50 text-purple-200 hover:bg-purple-800/50 transition-colors">
-            <LogIn size={18} />
-            <span>ログイン</span>
-          </button>
-          <button
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/50 text-purple-200 hover:bg-purple-800/50 transition-colors"
-            onClick={() => onNavigate('accountSettings')}
-          >
-            <Settings size={18} />
-            <span>アカウント設定</span>
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition-colors">
-            <UserPlus size={18} />
-            <span>新規登録</span>
-          </button>
-        </div>
-      </div>
-
       {/* Hero Section */}
       <div className="text-center mb-16">
         <h1 className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-purple-200 to-amber-200 mb-4">

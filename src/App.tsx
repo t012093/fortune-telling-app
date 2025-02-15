@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
+import { Menu, X, User } from 'lucide-react';
 import { PersonalInfoProvider, usePersonalInfo } from './context/PersonalInfoContext';
 import { ApiKeyProvider, useApiKeys } from './context/ApiKeyContext';
 import { setOpenAIApiKey } from './utils/openai';
@@ -26,7 +27,11 @@ function ApiKeyInitializer({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function MainContent() {
+interface MainContentProps {
+  onNavigate: (page: Page) => void;
+}
+
+function MainContent({ onNavigate }: MainContentProps) {
   const { personalInfo, setPersonalInfo, isOnboardingComplete } = usePersonalInfo();
 
   // オンボーディングが完了していない場合は、PersonalInfoOnboardingを表示
@@ -59,17 +64,21 @@ function MainContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900">
-      <TarotReader userInfo={defaultUserInfo} />
+      <TarotReader 
+        userInfo={defaultUserInfo}
+        onNavigate={onNavigate}
+      />
     </div>
   );
 }
 
 import AccountSettings from './components/AccountSettings';
 
-type Page = 'home' | 'tarot' | 'astrology' | 'ranking' | 'personalInfoOnboarding' | 'accountSettings';
+export type Page = 'home' | 'tarot' | 'astrology' | 'ranking' | 'personalInfoOnboarding' | 'accountSettings';
 
 function AppContent() {
   const [page, setPage] = useState<Page>('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isOnboardingComplete, setPersonalInfo, personalInfo } = usePersonalInfo();
   const handleNavigation = (p: Page) => setPage(p);
 
@@ -114,7 +123,7 @@ function AppContent() {
       case 'home':
         return <HomePage onNavigate={handleNavigation} />;
       case 'tarot':
-        return <MainContent />;
+        return <MainContent onNavigate={handleNavigation} />;
       case 'astrology':
         return <AstrologyChatBot />;
       case 'ranking':
@@ -128,8 +137,18 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900">
-      <header className="fixed top-0 left-0 right-0 bg-purple-900/80 backdrop-blur-sm p-4 flex justify-center gap-4 z-50">
+      <header className="fixed top-0 left-0 right-0 bg-purple-900/80 backdrop-blur-sm p-4 flex justify-between md:justify-center items-center z-50">
+          {/* ハンバーガーメニュー（モバイル） */}
           <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden text-purple-200 hover:text-purple-100"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          {/* デスクトップメニュー */}
+          <div className="hidden md:flex gap-4">
+            <button
             onClick={() => handleNavigation('home')}
             className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
           >
@@ -152,6 +171,69 @@ function AppContent() {
             className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
           >
             ランキング
+          </button>
+          </div>
+
+          {/* モバイルメニュー */}
+          {isMenuOpen && (
+            <div className="absolute top-full left-0 right-0 bg-purple-900/95 backdrop-blur-sm md:hidden">
+              <div className="flex flex-col p-4 gap-2">
+                <button
+                  onClick={() => {
+                    handleNavigation('home');
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+                >
+                  ホーム
+                </button>
+                <button
+                  onClick={() => {
+                    handleNavigation('tarot');
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+                >
+                  タロット
+                </button>
+                <button
+                  onClick={() => {
+                    handleNavigation('astrology');
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+                >
+                  星占い
+                </button>
+                <button
+                  onClick={() => {
+                    handleNavigation('ranking');
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors"
+                >
+                  ランキング
+                </button>
+                <button
+                  onClick={() => {
+                    handleNavigation('accountSettings');
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-full bg-purple-800/50 text-purple-200 hover:bg-purple-700/50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <User size={18} />
+                  アカウント設定
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* デスクトップアカウント設定ボタン */}
+          <button
+            onClick={() => handleNavigation('accountSettings')}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-200 hover:text-purple-100 md:flex items-center gap-2 hidden"
+          >
+            <User size={24} />
           </button>
       </header>
       <main className="pt-20">

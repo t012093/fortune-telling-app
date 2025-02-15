@@ -6,12 +6,15 @@ import { AstrologyInfo } from '../utils/gemini';
 import { majorArcana } from '../data/tarotCards';
 import '../styles/card.css';
 
-// カード裏面の画像パス
-const backCardImage = '/cards/cardback.png';
+import { Page } from '../App';
 
 interface TarotReaderProps {
   userInfo: AstrologyInfo;
+  onNavigate?: (page: Page) => void;
 }
+
+// カード裏面の画像パス
+const backCardImage = '/cards/cardback.png';
 
 // タイピングアニメーションコンポーネント
 const TypingText: React.FC<{ text: string; delay?: number }> = ({ 
@@ -67,7 +70,7 @@ const TypingText: React.FC<{ text: string; delay?: number }> = ({
 };
 
 /* 残りのコンポーネントコードは変更なし */
-const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
+const TarotReader: React.FC<TarotReaderProps> = ({ userInfo, onNavigate }) => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [reading, setReading] = useState<TarotReading | null>(null);
   const [showReading, setShowReading] = useState(false);
@@ -99,12 +102,13 @@ const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
     setShowThankYouButton(false);
   };
 
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+
   const handleCardSelect = async () => {
     if (!isSubscribed && dailyReadingUsed) return;
     
     setIsGenerating(true);
     
-    // バックグラウンドで占い結果を取得
     try {
       const newReading = await getTarotReading(userInfo);
       const randomIndex = Math.floor(Math.random() * majorArcana.length);
@@ -117,7 +121,6 @@ const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
       setSelectedCard(randomIndex);
       setReading(newReading);
       
-      // カードフリップ
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
@@ -126,12 +129,14 @@ const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
       }, 500);
     } catch (error) {
       console.error('Error getting tarot reading:', error);
+      if (error instanceof Error && error.message.includes('APIキー')) {
+        setShowApiKeyModal(true);
+      }
     } finally {
       setIsGenerating(false);
-      // カードを引いた後、24時間後にありがとうボタンを表示
       setTimeout(() => {
         setShowThankYouButton(true);
-      }, 24 * 60 * 60 * 1000); // 24時間 = 86400000ミリ秒
+      }, 24 * 60 * 60 * 1000);
     }
   };
 
@@ -305,6 +310,41 @@ const TarotReader: React.FC<TarotReaderProps> = ({ userInfo }) => {
             Subscribe Now
           </button>
         </motion.div>
+      )}
+
+      {/* APIキー設定モーダル */}
+      {showApiKeyModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-purple-900/90 backdrop-blur-sm p-6 rounded-xl max-w-md w-full"
+          >
+            <h3 className="text-xl font-semibold text-purple-100 mb-4">
+              APIキーの設定が必要です
+            </h3>
+            <p className="text-purple-200 mb-6">
+              タロット占いを利用するには、APIキーの設定が必要です。アカウント設定から設定してください。
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowApiKeyModal(false)}
+                className="px-4 py-2 text-purple-200 hover:text-purple-100 transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={() => {
+                  setShowApiKeyModal(false);
+                  onNavigate?.('accountSettings');
+                }}
+                className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
+              >
+                設定画面へ
+              </button>
+            </div>
+          </motion.div>
+        </div>
       )}
     </div>
   );

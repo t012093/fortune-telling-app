@@ -118,7 +118,7 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
                   <Trash2 size={20} />
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-purple-200 mb-1">生年月日</label>
                   <input
@@ -140,12 +140,12 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
               </div>
               <div>
                 <label className="block text-sm text-purple-200 mb-1">性別（任意）</label>
-                <div className="flex gap-4">
+                <div className="grid grid-cols-3 gap-2">
                   {(['male', 'female', 'other'] as const).map((gender) => (
                     <button
                       key={gender}
                       onClick={() => handleUpdateFamilyMember(member.id, { gender })}
-                      className={`flex-1 py-2 px-4 rounded transition-colors ${
+                      className={`w-full py-2 px-4 rounded transition-colors ${
                         member.gender === gender
                           ? 'bg-purple-500 text-white'
                           : 'bg-purple-900/30 text-purple-200 hover:bg-purple-800/30'
@@ -321,16 +321,16 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
   );
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-2xl bg-purple-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-800/30">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-2xl bg-purple-900/30 backdrop-blur-sm rounded-2xl p-4 sm:p-8 border border-purple-800/30">
         <h2 className="text-3xl font-bold text-center text-purple-100 mb-8">
           アカウント設定
         </h2>
 
-        <div className="flex justify-center gap-4 mb-8">
+        <div className="flex flex-row flex-wrap gap-2 mb-8">
           <button
             onClick={() => setActiveTab('profile')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-colors ${
               activeTab === 'profile'
                 ? 'bg-purple-500 text-white'
                 : 'bg-purple-900/30 text-purple-200 hover:bg-purple-800/30'
@@ -341,7 +341,7 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
           </button>
           <button
             onClick={() => setActiveTab('api')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-colors ${
               activeTab === 'api'
                 ? 'bg-purple-500 text-white'
                 : 'bg-purple-900/30 text-purple-200 hover:bg-purple-800/30'
@@ -352,7 +352,7 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
           </button>
           <button
             onClick={() => setActiveTab('voice')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-colors ${
               activeTab === 'voice'
                 ? 'bg-purple-500 text-white'
                 : 'bg-purple-900/30 text-purple-200 hover:bg-purple-800/30'
@@ -369,10 +369,10 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
           {activeTab === 'voice' && renderVoiceSettings()}
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-4">
           <button
             onClick={onCancel}
-            className="px-6 py-2 rounded-full bg-purple-900/30 text-purple-200 hover:bg-purple-800/30 transition-colors"
+            className="w-full sm:w-auto px-6 py-2 rounded-full bg-purple-900/30 text-purple-200 hover:bg-purple-800/30 transition-colors"
           >
             キャンセル
           </button>
@@ -395,7 +395,7 @@ export default function AccountSettings({ onSave, onCancel, currentSettings }: A
                 }
               });
             }}
-            className="flex items-center gap-2 px-6 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition-colors"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition-colors"
           >
             <Save size={18} />
             保存
